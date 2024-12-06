@@ -1,6 +1,6 @@
 use std::{
     fmt::{Debug, Display},
-    ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign},
+    ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -190,6 +190,14 @@ impl Vector2<isize> {
 
     pub fn u(self) -> Vector2<usize> {
         Vector2(self.0 as usize, self.1 as usize)
+    }
+}
+
+impl<T: Neg<Output = T>> Neg for Vector2<T> {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self(-self.0, -self.1)
     }
 }
 
