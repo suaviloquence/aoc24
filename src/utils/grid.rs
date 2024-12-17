@@ -73,6 +73,15 @@ impl<T> Grid<T> {
     pub fn iter_mut<'a>(&'a mut self) -> impl use<'a, T> + Iterator<Item = &'a mut T> {
         self.0.iter_mut().flat_map(|r| r.iter_mut())
     }
+
+    pub fn map<U, F: FnMut(T) -> U>(self, mut f: F) -> Grid<U> {
+        Grid(
+            self.0
+                .into_iter()
+                .map(|r| r.into_iter().map(|c| f(c)).collect())
+                .collect(),
+        )
+    }
 }
 
 impl<T> Index<Vector2> for Grid<T> {
@@ -193,6 +202,8 @@ impl Vector2<isize> {
     pub const LEFT: Self = Self(-1, 0);
     pub const DOWN: Self = Self(0, 1);
     pub const RIGHT: Self = Self(1, 0);
+
+    pub const CARDINALS: [Self; 4] = [Self::UP, Self::RIGHT, Self::DOWN, Self::LEFT];
 
     pub fn wrapping_add(self, rhs: Self) -> Self {
         Self(self.0.wrapping_add(rhs.0), self.1.wrapping_add(rhs.1))
