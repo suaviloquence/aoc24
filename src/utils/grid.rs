@@ -166,6 +166,20 @@ impl Vector2 {
         self.i().wrapping_sub(rhs).u()
     }
 
+    pub fn simplify(self) -> Self {
+        fn gcd(mut a: usize, mut b: usize) -> usize {
+            while b != 0 {
+                let t = b;
+                b = a % b;
+                a = t;
+            }
+            a
+        }
+
+        let g = gcd(self.0, self.1);
+        Self(self.0 / g, self.1 / g)
+    }
+
     pub fn i(self) -> Vector2<isize> {
         Vector2(self.0 as isize, self.1 as isize)
     }
@@ -190,6 +204,15 @@ impl Vector2<isize> {
 
     pub fn u(self) -> Vector2<usize> {
         Vector2(self.0 as usize, self.1 as usize)
+    }
+
+    pub fn to_sgn(self) -> (Vector2<usize>, Vector2<isize>) {
+        let x = Vector2(self.0.signum(), self.1.signum());
+        (Vector2(self.0.unsigned_abs(), self.1.unsigned_abs()), x)
+    }
+
+    pub fn from_sgn(mag: Vector2<usize>, dir: Vector2<isize>) -> Self {
+        Self(mag.0 as isize * dir.0, mag.1 as isize * dir.1)
     }
 }
 
